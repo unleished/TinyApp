@@ -10,15 +10,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
-
-
 };
 
 function generateRandomString() {
   let randomChar = '';
   let randomString = 'KikidoyoulovemeAreyouridingSayyoullnevereverleavefrombesidemeCauseiwantyaandineedya0123456789';
-    for (let i = 0; i < 7; i++) {
-      randomChar += randomString[Math.floor(Math.random() * 10)]
+    for (let i = 0; i < 6; i++) {
+      randomChar += randomString[Math.floor(Math.random() * 93)]
     }
   return randomChar;
 }
