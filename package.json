@@ -1,0 +1,21 @@
+{
+  "name": "tinyapp",
+  "version": "0.0.1",
+  "description": "tiny app project LHL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tiny",
+    "app",
+    "LHL"
+  ],
+  "author": "Leisha",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3"
+  }
+}

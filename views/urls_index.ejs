@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <% include ./partials/_header %>
+</head>
+<body>
+  <h2>Url Index</h2>
+  <p>
+<% for (let shortUrl in urls) { %>
+<p><%= shortUrl %> is the id for: <%= urls[shortUrl] %></p>
+<% } %>
+</p>
+
+
+</body>
+</html>
