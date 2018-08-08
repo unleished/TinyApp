@@ -4,12 +4,19 @@
   <% include ./partials/_header %>
 </head>
 <body>
-  <h2>Url Index</h2>
+  <h2>URL List</h2>
   <p>
 <% for (let shortUrl in urls) { %>
-<p><%= shortUrl %> is the id for: <%= urls[shortUrl] %></p>
-<% } %>
+<p>
+<p><strong><%= shortUrl %></strong> is the id for: <%= urls[shortUrl] %> <a href="/urls/<%= shortUrl %>/">Edit</a></p>
+<p>
+  <form method="POST" action='/urls/<%= shortUrl %>/delete'>
+    <input type='submit'value='Delete!'>
+  </form>
+  <% } %>
 </p>
+
+</ul>
 
 
 </body>

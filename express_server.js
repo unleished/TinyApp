@@ -48,7 +48,18 @@ app.get('/', (req, res) => {
 app.get('/u/:shortUrl', (req, res) => {
   let longURL = urlDatabase[req.params.shortUrl];
   res.redirect(longURL);
-})
+});
+
+app.post('/urls/:id', (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL
+  res.redirect('/urls/'+req.params.id);
+});
+
+app.post('/urls/:id/delete', (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect('/urls/');
+});
+
 app.get('/hello', (req, res) => {
   res.end('<html><body>Hello <b>World</b></body></html>\n');
 });

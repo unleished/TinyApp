@@ -4,8 +4,16 @@
   <% include ./partials/_header.ejs %>
 </head>
 <body>
-  <h2>Show Url</h2>
-  <p>Full URL of <%= id %> is <%= urls %></p>
+  <h3>URL Info: <%= id %></h3>
+  <!-- <h3><%= id %></h3> -->
+  <p>Full URL is <%= urls %></p>
+  <p>
+    <form action='/urls/<%= id %>' method='post' style='margin:150px;'>
+      <label for='urls'>Edit your URL: </label>
+      <input id='longURL' type='text' name='longURL' value='<%= urls %>' style='width: 300px'>
+      <input type='submit'value='Update'>
+    </form>
+  </p>
 
 </body>
 </html>
