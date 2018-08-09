@@ -3,7 +3,10 @@
 <h5> TinyApp </h5>
 
 <% if (userID) { %>
-  <h3> Logged in as <%= userID.email %></h3>
+  <h4> You're Logged In!</h4>
+  <form method="POST" action='/logout'>
+    <input type='submit'value='Logout'>
+  </form>
 <% } else { %>
   <p><a href='/register'>Register</a></p>
   <p><a href='/login'>Login</a></p>

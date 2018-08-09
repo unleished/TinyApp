@@ -11,13 +11,13 @@
 <p><strong><%= shortUrl %></strong> is the id for: <%= urls[shortUrl] %> <a href="/urls/<%= shortUrl %>/">Edit</a></p>
 <p>
   <form method="POST" action='/urls/<%= shortUrl %>/delete'>
-    <input type='submit'value='Delete!'>
+    <input type='submit' value='Delete!'>
   </form>
   <% } %>
 </p>
+<p> <a href='/urls/new'>Create a new short url </a> </p>
 
 </ul>
-
 
 </body>
 </html>

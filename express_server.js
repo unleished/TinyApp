@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-const PORT = 8080;
+
+const PORT = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
 
@@ -27,6 +28,15 @@ const users = {
   }
 }
 
+function validateLogin(email, password) {
+  for (user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return users[user].id;
+    }
+  }
+  return false;
+}
+
 function generateRandomString() {
   let randomChar = '';
   let randomString = 'KikidoyoulovemeAreyouridingSayyoullnevereverleavefrombesidemeCauseiwantyaandineedya0123456789';
@@ -39,10 +49,11 @@ function generateRandomString() {
 app.get('/register', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: ''
+    userID: '',
+    pageID: 'reg'
   };
   if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
+    templateVars.userID = users[req.cookies.userID]
   }
   res.render('register', templateVars);
 });
@@ -65,51 +76,65 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: ''
+    userID: '',
+    pageID: 'login'
   };
   if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
+    templateVars.userID = users[req.cookies.userID]
   };
   res.render('login', templateVars);
 });
 
 app.post('/login', (req, res) => {
-  let templateVars = {
-    userID: ''
-  };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
-  };
-  res.redirect('/urls');
-});
 
-app.post('/logout', (req, res) => {
-  res.redirect('/urls');
+  let userID = validateLogin(req.body.email, req.body.password)
+
+  if (userID) {
+    let templateVars = {
+      urls: urlDatabase,
+      userID: userID,
+      pageID: '',
+    };
+    res.cookie('userID', userID);
+    res.redirect('/urls');
+  } else {
+    res.status(403).send('Please check your login credentials')
+  }
 });
 
 app.get('/urls', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: ''
+    userID: '',
+    pageID: ''
   };
   if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
+    templateVars.userID = users[req.cookies.userID]
   };
   res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  let templateVars = {
+    urls: urlDatabase,
+    userID: '',
+    pageID: ''
+  };
+  if (req.cookies['userID']) {
+    templateVars.userID = users[req.cookies.userID]
+  }
+  res.render('urls_new', templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     id: req.params.id,
     urls: urlDatabase[req.params.id],
-    userID: ''
+    userID: '',
+    pageID: ''
   };
   if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
+    templateVars.userID = users[req.cookies.userID]
   }
   res.render("urls_show", templateVars);
 });
@@ -118,10 +143,6 @@ app.post('/urls', (req, res) => {
   let urlId = generateRandomString();
   urlDatabase[urlId] = req.body.longURL;
   res.redirect('/urls/'+urlId);
-});
-
-app.get('/', (req, res) => {
-  res.end('Hello!');
 });
 
 app.get('/u/:shortUrl', (req, res) => {
@@ -137,7 +158,7 @@ app.post('/urls/:id', (req, res) => {
     userID: ''
   };
   if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies['userID']]
+    templateVars.userID = users[req.cookies.userID]
   }
   res.redirect('/urls/'+req.params.id);
 });
@@ -149,6 +170,23 @@ app.post('/urls/:id/delete', (req, res) => {
 
 app.get('/hello', (req, res) => {
   res.end('<html><body>Hello <b>World</b></body></html>\n');
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('userID');
+  res.redirect('/urls');
+});
+
+app.get('/', (req, res) => {
+  let templateVars = {
+    urls: urlDatabase,
+    userID: '',
+    pageID: ''
+  };
+  if (req.cookies.userID) {
+    templateVars.userID = req.cookies.userID
+  }
+  res.redirect('/urls/', templateVars);
 });
 
 app.get('/urls.json', (req, res) => {
