@@ -3,6 +3,8 @@ const app = express();
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const bcrypt = require('bcrypt');
+
 const PORT = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
@@ -10,6 +12,8 @@ app.set('view engine', 'ejs');
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+// bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword); // returns true
+// bcrypt.compareSync("pink-donkey-minotaur", hashedPassword);
 const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
@@ -25,18 +29,18 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
   },
  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
 
 function validateLogin(email, password) {
   for (user in users) {
-    if (users[user].email === email && users[user].password === password) {
+    if (users[user].email === email && bcrypt.compareSync(password, users[user].password)) {
       return users[user].id;
     }
   }
@@ -77,11 +81,16 @@ app.post('/register', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.sendStatus(400);
   } else {
+
+    const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+
     let randomID = generateRandomString();
     users[randomID] = {
       id: randomID,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     };
     res.cookie('userID', randomID);
     res.redirect('/urls');
