@@ -7,17 +7,22 @@
   <% if (userID) { %>
 
   <h2>URL List</h2>
-  <p> <% for (let shortUrl in urls) { %></p>
-  <p><strong><%= shortUrl %></strong> is the id for: <%= urls[shortUrl].url %> <a href="/urls/<%= shortUrl %>/">Edit</a></p>
-  <p>
-    <form method="POST" action='/urls/<%= shortUrl %>/delete'>
-      <input type='submit' value='Delete!'>
-    </form>
-    <% } %>
-  </p>
-  <p> <a href='/urls/new'>Create a new short url </a> </p>
+  <% for (let shortUrl in urls) { %>
+    <ul>
+      <li><strong><%= shortUrl %></strong> is the id for: <%= urls[shortUrl].url %>
+        <form method="get" action='"/urls/<%= shortUrl %>/'>
+          <input type='submit' value='Edit'>
+        </form>
+
+        <form method="POST" action='/urls/<%= shortUrl %>/delete'>
+          <input type='submit' value='Delete!'>
+        </form>
+      </li>
+    </ul>
+      <% } %>
+    <p> <a href='/urls/new'>Create a new short url </a> </p>
   <% } else { %>
-    <h2><a href="/login">Login</a> to access your URL List</h2>
+    <h1>Welcome to TinyApp!</h1>
   <% } %>
 </body>
 </html>

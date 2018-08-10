@@ -4,12 +4,15 @@
     <% include ./partials/_header.ejs %>
  </head>
   <body style="font-size:20px; padding:50px;">
-
+<% if (userID) { %>
+  
+  <% } else { %>
     <form action='/login' method='post' style='margin:50px;'>
       <label for='login'>Welcome Back! Login here </label>
       <input id='email' type='email' name='email' placeholder='email' style='width: 300px'>
       <input id='password' type='password' name='password' placeholder='Enter password' style='width: 300px'>
       <input type='submit'value='Login'>
     </form>
+<% } %>
   </body>
 </html>

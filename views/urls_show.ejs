@@ -5,19 +5,17 @@
 </head>
 <body>
   <% if (userID) { %>
-    <h2> Edit URL Info</h2>
-
-
-    <% for (let shortUrl in urls) { %>
+    <h2> Edit URL Info for <%= shortUrl %></h2>
+    <h4>
 
     <p>
       <form action='/urls/<%= shortUrl %>' method='post' style='margin:10px;'>
         <label for='urls'>Edit your URL: </label>
-        <input id='longURL' type='text' name='longURL' value='<%= urls[shortUrl].url %>' style='width: 300px'>
+        <input id='longURL' type='text' name='longURL' value='<%= longUrl %>' style='width: 300px'>
         <input type='submit'value='Update'>
       </form>
     </p>
-    <% } %>
+
     <p><a href="/urls">show all URLs</a></p>
   <% } else { %>
     <h2><a href="/login">Login</a> to access your URL List</h2>
