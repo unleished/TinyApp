@@ -12,8 +12,7 @@ app.set('view engine', 'ejs');
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword); // returns true
-// bcrypt.compareSync("pink-donkey-minotaur", hashedPassword);
+
 const urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
@@ -47,6 +46,7 @@ function validateLogin(email, password) {
   return false;
 }
 
+// function generates a randome string for user[users], user[users].id, & urlDatabase[shortUrl] values.
 function generateRandomString() {
   let randomChar = '';
   let randomString = 'KikidoyoulovemeAreyouridingSayyoullnevereverleavefrombesidemeCauseiwantyaandineedya0123456789';
@@ -56,22 +56,33 @@ function generateRandomString() {
   return randomChar;
 }
 
+// filters through the urlDatabase to find urls related to a specific userID.
 function filteredUrls (userID) {
   let filterObj = {};
   for (var shortUrl in urlDatabase) {
-    console.log(shortUrl);
     if (userID === urlDatabase[shortUrl].userID) {
       filterObj[shortUrl] = urlDatabase[shortUrl];
     }
   }
   return filterObj;
 }
+// Take a userID and find the email for the user.
+function userEmail(userID) {
+  let emailObj = {};
+  for (var user in users) {
+    if (userID === users[user].id) {
+      emailObj = users[user]
+    }
+  }
+  return emailObj.email;
+};
 
 app.get('/register', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: req.cookies['userID'],
-    pageID: 'reg'
+    userID: req.cookies.userID,
+    pageID: 'reg',
+    email: userEmail(req.cookies.userID)
   };
 
   res.render('register', templateVars);
@@ -84,7 +95,6 @@ app.post('/register', (req, res) => {
 
     const password = req.body.password;
     const hashedPassword = bcrypt.hashSync(password, 10);
-
 
     let randomID = generateRandomString();
     users[randomID] = {
@@ -100,10 +110,17 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: req.cookies['userID'],
-    pageID: 'login'
+    users: users,
+    userID: req.cookies.userID,
+    pageID: 'login',
+    email: userEmail(req.cookies.userID)
   };
+console.log('this is the login get page');
+console.log('this is templateVars email: ', templateVars.email);
 
+
+
+console.log(templateVars);
   res.render('login', templateVars);
 });
 
@@ -114,9 +131,16 @@ app.post('/login', (req, res) => {
   if (userID) {
     let templateVars = {
       urls: urlDatabase,
-      userID: userID,
+      userID: req.cookies.userID,
       pageID: '',
+      email: userEmail(req.cookies.userID)
     };
+    console.log('this is the login post page');
+    console.log('this is templateVars email: ', templateVars.email);
+
+
+
+
     res.cookie('userID', userID);
     res.redirect('/urls');
   } else {
@@ -130,8 +154,10 @@ app.get('/urls', (req, res) => {
     urls: filteredUrls(req.cookies['userID']),
     userID: req.cookies['userID'],
     pageID: '',
-
+    email: userEmail(req.cookies.userID)
   };
+  console.log('userEmail func with userID cookies: ', userEmail(req.cookies.userID))
+  console.log('urls get email: ', templateVars.email);
 
 
   res.render('urls_index', templateVars);
@@ -141,7 +167,8 @@ app.get('/urls/new', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     userID: req.cookies['userID'],
-    pageID: ''
+    pageID: '',
+    email: userEmail(req.cookies.userID)
   };
 
   res.render('urls_new', templateVars);
@@ -154,7 +181,8 @@ let shortUrl = req.params.shortUrl
     // urls: urlDatabase[req.params.id],
     urls: filteredUrls(req.cookies['userID']),
     userID: req.cookies['userID'],
-    pageID: ''
+    pageID: '',
+    email: userEmail(req.cookies.userID)
   };
   if (req.cookies['userID'] !== urlDatabase[shortUrl].userID) {
     res.status(401).send('You cannot edit this URL');
@@ -181,7 +209,8 @@ app.post('/urls/:id', (req, res) => {
   let templateVars = {
     id: req.params.id,
     urls: filteredUrls(req.cookies['userID']),
-    userID: req.cookies['userID']
+    userID: req.cookies['userID'],
+    user: userEmail(req.cookies.userID)
 
   };
 
@@ -206,7 +235,8 @@ app.get('/', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     userID: req.cookies['userID'],
-    pageID: ''
+    pageID: '',
+    email: userEmail(req.cookies.userID)
   };
 
   res.redirect('/urls/', templateVars);
