@@ -4,16 +4,23 @@
   <% include ./partials/_header.ejs %>
 </head>
 <body>
-  <h3>URL Info: <%= id %></h3>
+  <% if (userID) { %>
+    <h2> Edit URL Info</h2>
 
-  <p>Full URL is <%= urls %></p>
-  <p>
-    <form action='/urls/<%= id %>' method='post' style='margin:10px;'>
-      <label for='urls'>Edit your URL: </label>
-      <input id='longURL' type='text' name='longURL' value='<%= urls %>' style='width: 300px'>
-      <input type='submit'value='Update'>
-    </form>
-  </p>
-<p><a href="/urls">show all URLs</a></p>
+
+    <% for (let shortUrl in urls) { %>
+
+    <p>
+      <form action='/urls/<%= shortUrl %>' method='post' style='margin:10px;'>
+        <label for='urls'>Edit your URL: </label>
+        <input id='longURL' type='text' name='longURL' value='<%= urls[shortUrl].url %>' style='width: 300px'>
+        <input type='submit'value='Update'>
+      </form>
+    </p>
+    <% } %>
+    <p><a href="/urls">show all URLs</a></p>
+  <% } else { %>
+    <h2><a href="/login">Login</a> to access your URL List</h2>
+  <% } %>
 </body>
 </html>

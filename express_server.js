@@ -11,8 +11,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  "b2xVn2": {
+    url: "http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  "9sm5xK": {
+    url: "http://www.google.com",
+    userID: "user2RandomID"
+  }
 };
 
 const users = {
@@ -46,15 +52,24 @@ function generateRandomString() {
   return randomChar;
 }
 
+function filteredUrls (userID) {
+  let filterObj = {};
+  for (var shortUrl in urlDatabase) {
+    console.log(shortUrl);
+    if (userID === urlDatabase[shortUrl].userID) {
+      filterObj[shortUrl] = urlDatabase[shortUrl];
+    }
+  }
+  return filterObj;
+}
+
 app.get('/register', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: '',
+    userID: req.cookies['userID'],
     pageID: 'reg'
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
-  }
+
   res.render('register', templateVars);
 });
 
@@ -76,12 +91,10 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: '',
+    userID: req.cookies['userID'],
     pageID: 'login'
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
-  };
+
   res.render('login', templateVars);
 });
 
@@ -105,39 +118,41 @@ app.post('/login', (req, res) => {
 
 app.get('/urls', (req, res) => {
   let templateVars = {
-    urls: urlDatabase,
-    userID: '',
-    pageID: ''
+    urls: filteredUrls(req.cookies['userID']),
+    userID: req.cookies['userID'],
+    pageID: '',
+
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
-  };
+
+
   res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: '',
+    userID: req.cookies['userID'],
     pageID: ''
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
-  }
+
   res.render('urls_new', templateVars);
 });
 
-app.get("/urls/:id", (req, res) => {
+app.get("/urls/:shortUrl", (req, res) => {
+let shortUrl = req.params.shortUrl
   let templateVars = {
-    id: req.params.id,
-    urls: urlDatabase[req.params.id],
-    userID: '',
+    shortUrl: req.params.shortUrl,
+    // urls: urlDatabase[req.params.id],
+    urls: filteredUrls(req.cookies['userID']),
+    userID: req.cookies['userID'],
     pageID: ''
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
+  if (req.cookies['userID'] !== urlDatabase[shortUrl].userID) {
+    res.status(401).send('You cannot edit this URL');
+  } else {
+    res.render("urls_show", templateVars);
   }
-  res.render("urls_show", templateVars);
+
 });
 
 app.post('/urls', (req, res) => {
@@ -147,20 +162,20 @@ app.post('/urls', (req, res) => {
 });
 
 app.get('/u/:shortUrl', (req, res) => {
-  let longURL = urlDatabase[req.params.shortUrl];
+  let shortUrl = req.params.shortUrl
+  let longURL = urlDatabase[shortUrl].url;
   res.redirect(longURL);
 });
 
 app.post('/urls/:id', (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL
+  // urlDatabase[req.params.id] = req.body.longURL
   let templateVars = {
     id: req.params.id,
-    urls: urlDatabase[req.params.id],
-    userID: ''
+    urls: filteredUrls(req.cookies['userID']),
+    userID: req.cookies['userID']
+
   };
-  if (req.cookies['userID']) {
-    templateVars.userID = users[req.cookies.userID]
-  }
+
   res.redirect('/urls/'+req.params.id);
 });
 
@@ -181,12 +196,10 @@ app.post('/logout', (req, res) => {
 app.get('/', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    userID: '',
+    userID: req.cookies['userID'],
     pageID: ''
   };
-  if (req.cookies.userID) {
-    templateVars.userID = req.cookies.userID
-  }
+
   res.redirect('/urls/', templateVars);
 });
 
