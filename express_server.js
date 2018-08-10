@@ -191,7 +191,7 @@ app.get('/urls/new', (req, res) => {
 
 });
 
-app.get("/urls/:shortUrl", (req, res) => {
+app.get('/urls/:shortUrl', (req, res) => {
 let shortUrlID = req.params.shortUrl
   let templateVars = {
     shortUrl: req.params.shortUrl,

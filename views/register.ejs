@@ -1,9 +1,6 @@
 <!DOCTYPE>
 <html lang='en'>
   <head><% include ./partials/_header %> </head>
-  <% if (userID) { %>
-    <meta http-equiv="Refresh" content="0;url=/urls">
-  <% } else { %>
     <body style="font-size:20px; padding:50px;">
     <h2> Sign up to use TinyApp </h2>
     <form action='/register' method='post' style='margin:50px;'>
@@ -11,6 +8,6 @@
       <input id='password' type='password' name='password' placeholder='Enter password' style='width: 300px'>
       <input type='submit' value='Submit'>
     </form>
-    <% } %>
+
   </body>
 </html>

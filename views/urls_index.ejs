@@ -4,13 +4,14 @@
   <% include ./partials/_header %>
 </head>
 <body>
+  <body style="font-size:20px; padding:50px;">
   <% if (userID) { %>
 
   <h2>URL List</h2>
   <% for (let shortUrl in urls) { %>
     <ul>
       <li><strong><%= shortUrl %></strong> is the id for: <%= urls[shortUrl].url %>
-        <form method="get" action='"/urls/<%= shortUrl %>/'>
+        <form method="get" action='/urls/<%=shortUrl%>'>
           <input type='submit' value='Edit'>
         </form>
 

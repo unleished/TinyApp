@@ -4,12 +4,13 @@
   <% include ./partials/_header.ejs %>
 </head>
 <body>
+  <body style="font-size:20px; padding:50px;">
   <% if (userID) { %>
     <h2> Edit URL Info for <%= shortUrl %></h2>
     <h4>
 
     <p>
-      <form action='/urls/<%= shortUrl %>' method='post' style='margin:10px;'>
+      <form action="/urls/<%=shortUrl%>" method='post' style='margin:10px;'>
         <label for='urls'>Edit your URL: </label>
         <input id='longURL' type='text' name='longURL' value='<%= longUrl %>' style='width: 300px'>
         <input type='submit'value='Update'>
