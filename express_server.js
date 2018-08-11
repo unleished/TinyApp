@@ -86,16 +86,16 @@ function userEmail(userID) {
 };
 
 function emailExists(email) {
-  let existEmailObj = {};
-  for (var userEmail in users) {
-    if (userEmail === users[userEmail]) {
-      var result = true;
-    } else {
-      return false;
+  var result = false;
+  for (var userid in users) {
+    if (email === users[userid].email) {
+      result = true;
+      return result;
     }
   }
   return result;
 }
+// console.log('email exists result: ', result);
 
 app.get('/register', (req, res) => {
   let templateVars = {
@@ -111,8 +111,9 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.sendStatus(400);
-  } else if (!emailExists(req.body.email)) {
+  } else if (emailExists(req.body.email)) {
     res.sendStatus(409);
+    console.log('email exists else');
   } else {
 
     const password = req.body.password;
