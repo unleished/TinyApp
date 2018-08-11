@@ -95,7 +95,7 @@ function emailExists(email) {
   }
   return result;
 }
-// console.log('email exists result: ', result);
+
 
 app.get('/register', (req, res) => {
   let templateVars = {
